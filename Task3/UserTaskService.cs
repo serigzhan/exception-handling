@@ -12,25 +12,22 @@ namespace Task3
             _userDao = userDao;
         }
 
-        public int AddTaskForUser(int userId, UserTask task)
+        public void AddTaskForUser(int userId, UserTask task)
         {
             if (userId < 0)
-                return -1;
+                throw new ArgumentOutOfRangeException("userId");
 
             var user = _userDao.GetUser(userId);
-            if (user == null)
-                return -2;
+            ArgumentNullException.ThrowIfNull(user, "user");
 
             var tasks = user.Tasks;
             foreach (var t in tasks)
             {
                 if (string.Equals(task.Description, t.Description, StringComparison.OrdinalIgnoreCase))
-                    return -3;
+                    throw new ArgumentException("The task already exists");
             }
 
             tasks.Add(task);
-
-            return 0;
         }
     }
 }
